@@ -1,1 +1,1 @@
-web: gunicorn Deployment_Dash:server
+web: gunicorn MINUSMA_Dashboard:server
