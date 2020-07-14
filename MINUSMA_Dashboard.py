@@ -32,7 +32,7 @@ app.layout = html.Div([
     dcc.Interval(
             id='my_interval',
             disabled=False,     #if True, the counter will no longer update
-            interval=1*1000,#increment the counter n_intervals every interval milliseconds
+            interval=1*30000,#increment the counter n_intervals every interval milliseconds
             n_intervals=0,      #number of times the interval has passed
             max_intervals=-1,    #number of times the interval will be fired.
                                 #if -1, then the interval has no limit (the default)
@@ -129,7 +129,7 @@ app.layout = html.Div([
     [Output(component_id='output_timer',component_property='children')],
     [Input(component_id='my_interval',component_property = 'n_intervals')])
 def update_time(n):
-    time_now = dt.datetime.now(gmt).strftime('%H:%M:%S')
+    time_now = dt.datetime.now(gmt).strftime('%H:%M')
     
     return ('Local Time: ' + str(time_now),)
 
