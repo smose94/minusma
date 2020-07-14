@@ -5,6 +5,7 @@ pandas==1.0.1
 seaborn
 plotly
 dash
+dash-bootstrap-components>=0.10.1
 gunicorn
 pytz
 datetime 
