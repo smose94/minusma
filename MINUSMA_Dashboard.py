@@ -53,7 +53,7 @@ app.layout = html.Div([
         dbc.NavbarSimple(
             children=[     
         dbc.NavItem(dbc.NavLink("United Nations Peacekeeping", href="https://peacekeeping.un.org/en'")),
-        dbc.NavItem(dbc.NavLink("Project Github", href="www.github.com/smose94/minusma")),
+        dbc.NavItem(dbc.NavLink("Project Github", href="https://github.com/smose94/minusma")),
         dbc.NavItem(dbc.NavLink("ACLED", href="https://acleddata.com")),
         dbc.NavItem(dbc.NavLink("MINUSMA Home", href="https://minusma.unmissions.org/en"))
         
