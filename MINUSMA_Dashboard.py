@@ -196,7 +196,7 @@ def update_graphs(n):
                                       y=map_data['fatalities'],
                                       template='plotly_white'
                                       )
-    fig_density_series.update_traces(marker_color = 'grey')
+    fig_density_series.update_traces(marker_color = 'indianred',opacity=0.7)
     fig_density_series.update_layout(xaxis_title="Time",
                        yaxis_title="Fatalities",
                        title = 'Fatalities by Time'
@@ -206,7 +206,8 @@ def update_graphs(n):
                                  y = minusma_frame['value_counts'],
                                  template='plotly_white'
                                  )
-    fig_minusma_series.update_traces(marker_color = 'grey')
+    fig_minusma_series.update_traces(marker_color = 'indianred',
+                                     opacity=0.7)
     fig_minusma_series.update_layout(xaxis_title="Time",
                        yaxis_title="Events invovling MINUSMA",
                        title = 'Involvement of MINUSMA by Time'
@@ -233,7 +234,7 @@ def update_graphs(n):
     fig2.update_layout(xaxis_title="Total Fatalities",
                        yaxis_title="Administrative Regions"
                          )
-    fig2.update_traces(marker_color = 'grey')
+    fig2.update_traces(marker_color = 'indianred',opacity=0.7)
     
     fig_indicator1 = go.Figure()
     fig_indicator1.add_trace(go.Indicator(
