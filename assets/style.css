@@ -1,1 +1,14 @@
-#navbar_01 .navbar {background-color: #e91e63;}
+#navbar_01 .navbarsimple {font-color: #e91e63;}
+
+#navbar_els .navitem {font-color: #e91e63;}
+
+#sidebar_default .h1{
+    position: fixed,
+    top: 0,
+    left: 0,
+    bottom: 0,
+    width: 16rem,
+    padding: 2rem 1rem,
+    background-color: #41729F;}
+
+#jumbotron (font-colour: pink;}

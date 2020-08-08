@@ -13,7 +13,8 @@ import plotly.figure_factory as ff
 import datetime as dt
 from pytz import timezone
 gmt = timezone('GMT')
-
+import json
+import requests
 import dash
 import dash_core_components as dcc
 import dash_html_components as html
@@ -87,7 +88,7 @@ app.layout = html.Div([
                 width=3),
                 
         dbc.Col(children = [
-            html.H1('MINUSMA Dashboard', style={'color':'Black','margin-top':'3vw'}),
+            html.H1('MINUSMA Dashboard', style={'color':'#274472','margin-top':'3vw'}),
             html.A(id = 'output_timer',style={'color':'Black','margin-bottom':'1vw'})],
                 style={'color':colors['text'],
                        'border': '1px solid',
@@ -101,7 +102,7 @@ app.layout = html.Div([
             html.H6('UNITED NATIONS MULTIDIMENSIONAL INTEGRATED STABILIZATION MISSION IN MALI',
                     style={
                            'text-align':'left',
-                           'margin-top':'1vw',
+                           'margin-top':'1.5vw',
                            'font-size':22
                            })],
 
@@ -129,19 +130,48 @@ app.layout = html.Div([
                }),
         
     dbc.Row(children = [
+        dbc.Col(
+            dcc.Graph(id='fig_density_series'),width=4,style={'margin-top':'1vw'}),        
+        dbc.Col(
+            dcc.Graph(id='fig_minusma_series'),width=4,style={'margin-top':'1vw'}),
+        dbc.Col(
+            dcc.Graph(id='fig2'),width=4)
         
-        dbc.Col(
-            dcc.Graph(id='fig_density_series'),width=6),        
-        dbc.Col(
-            dcc.Graph(id='fig_minusma_series'),width=6)
         ]),
     
     
     dbc.Row(children=[
         dbc.Col(
-            dcc.Graph(id='fig'),width=6),
-        dbc.Col(
-            dcc.Graph(id='fig2'),width=6,style={'margin-top':'8vw'})
+            dcc.Graph(id='fig'),width=8)
+        ]),
+    dbc.Row(children=[
+        dbc.Col(children=[
+            dbc.Jumbotron(
+    [
+        dbc.Container(
+            [
+                html.H1("Fluid jumbotron", className="display-3"),
+                html.P(
+                    "This jumbotron occupies the entire horizontal "
+                    "space of its parent.",
+                    className="lead",
+                ),
+                html.P(
+                    "You will need to embed a fluid container in "
+                    "the jumbotron.",
+                    className="lead",
+                ),
+            ],
+            fluid=True,
+            id='jumbotron'
+        )
+    ],
+    
+    fluid=True
+
+    )],
+            width=12)
+        
         ])
     ])
 
@@ -168,8 +198,8 @@ def update_time(n):
 def update_graphs(n):
     token = 'pk.eyJ1Ijoic21vc2U5NCIsImEiOiJja2N1c2RxbncwbXpzMnNwYmZzeTVjcXY5In0.JCYT6a5J_4IiEeVBoinhvg'
     api = "https://api.acleddata.com/acled/read?terms=accept&country=Mali&iso=466&limit=0"
-    AcledData = pd.read_json(api)
-    AcledData = pd.DataFrame(AcledData['data'].to_list())
+    AcledData = json.loads(requests.get(api).text)
+    AcledData = pd.DataFrame(AcledData['data'])
     data = AcledData.to_csv('Processed_Acled_Mali.csv')
     data = pd.read_csv('Processed_Acled_Mali.csv')
     
@@ -196,7 +226,7 @@ def update_graphs(n):
                                       y=map_data['fatalities'],
                                       template='plotly_white'
                                       )
-    fig_density_series.update_traces(marker_color = colors['text'],opacity=0.7)
+    fig_density_series.update_traces(marker_color = '#5885AF',opacity=0.7)
     fig_density_series.update_layout(xaxis_title="Time",
                        yaxis_title="Fatalities",
                        title = 'Fatalities by Time'
@@ -220,7 +250,7 @@ def update_graphs(n):
                      center=dict(
                          lon=-4.0,
                          lat=15.5),
-                     width = 600, height = 600, zoom=4, 
+                     width = 900, height = 700, zoom=4, 
                      title = 'Violence in Mali',
                      hover_data= ['actor1'])
     
@@ -234,14 +264,14 @@ def update_graphs(n):
     fig2.update_layout(xaxis_title="Total Fatalities",
                        yaxis_title="Administrative Regions"
                          )
-    fig2.update_traces(marker_color = colors['text'],opacity=0.7)
+    fig2.update_traces(marker_color = '#274472',opacity=0.7)
     
     fig_indicator1 = go.Figure()
     fig_indicator1.add_trace(go.Indicator(
         value = total_fatalities,
         title = 'Fatalities since 2013',   
         domain = {'x': [0, 1], 'y': [0, 1]}))
-    fig_indicator1.update_layout(paper_bgcolor = colors['text'],
+    fig_indicator1.update_layout(paper_bgcolor = '#41729F',
                                  font= {'color': 'white'},
                                  height=250)
                                  
@@ -254,7 +284,7 @@ def update_graphs(n):
         title = 'Fatalities in last 7 days',
         mode='number',
         domain = {'x': [0, 1], 'y': [0, 1]}))
-    fig_indicator2.update_layout(paper_bgcolor = colors['text'],
+    fig_indicator2.update_layout(paper_bgcolor = '#274472',
                                  font= {'color': 'white'},
                                  height=250)
     
@@ -264,7 +294,7 @@ def update_graphs(n):
         title = 'Incidents since 2013',
         mode='number',   
         domain = {'x': [0, 1], 'y': [0, 1]}))
-    fig_indicator3.update_layout(paper_bgcolor = colors['text'],
+    fig_indicator3.update_layout(paper_bgcolor = '#5885AF',
                                  font= {'color': 'white'},
                                  height=250)
 
@@ -275,5 +305,5 @@ def update_graphs(n):
             fig_indicator1,fig_indicator2,fig_indicator3,)
 
 if __name__ == '__main__':
-    app.run_server(debug=False)
+    app.run_server(debug=True)
 
