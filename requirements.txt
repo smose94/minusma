@@ -3,6 +3,8 @@ django-heroku==0.3.1
 numpy==1.18.1
 pandas==1.0.1
 seaborn
+requests
+json
 plotly
 dash
 dash-bootstrap-components>=0.10.1
