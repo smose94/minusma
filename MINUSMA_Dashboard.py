@@ -240,8 +240,8 @@ def update_graphs(n):
     updated_acled = max(AcledData['event_date'])
     
     #Process the dataframes for the monthly year-on-year comparisons
-    last_day_of_prev_month = date.today().replace(day=1) - timedelta(days=1)
-    start_day_of_prev_month = date.today().replace(day=1) - timedelta(days=last_day_of_prev_month.day)
+    last_day_of_prev_month = pd.Timestamp.today().replace(day=1) - timedelta(days=1)
+    start_day_of_prev_month = pd.Timestamp.today().replace(day=1) - timedelta(days=last_day_of_prev_month.day)
     last_day_last_year = last_day_of_prev_month - timedelta(days=365)
     first_day_last_year = start_day_of_prev_month - timedelta(days=365)
     
