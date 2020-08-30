@@ -1,8 +1,8 @@
-#navbar_01 .navbarsimple {font-color: #e91e63;}
+.navbar_01 .navbarsimple {font-color: #e91e63;}
 
-#navbar_els .navitem {font-color: #e91e63;}
+.navbar_els .navitem {font-color: #e91e63;}
 
-#sidebar_default .h1{
+.sidebar_default .h1{
     position: fixed,
     top: 0,
     left: 0,
@@ -11,4 +11,16 @@
     padding: 2rem 1rem,
     background-color: #41729F;}
 
-#jumbotron (font-colour: pink;}
+.jumbotron {margin-bottom: 0em;
+    	    background-color: #0076c0;
+    	    color: #ffffff;
+		text-align: center;}
+
+.fa {
+  padding: 20px;
+  font-size: 30px;
+  width: 30px;
+  text-align: center;
+  text-decoration: none;
+  border-radius: 50%;
+}

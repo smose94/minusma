@@ -11,6 +11,7 @@ import plotly.express as px
 import plotly.graph_objects as go
 import plotly.figure_factory as ff
 import datetime as dt
+from datetime import date, timedelta
 from pytz import timezone
 gmt = timezone('GMT')
 import json
@@ -88,8 +89,9 @@ app.layout = html.Div([
                 width=3),
                 
         dbc.Col(children = [
-            html.H1('MINUSMA Dashboard', style={'color':'#274472','margin-top':'3vw'}),
-            html.A(id = 'output_timer',style={'color':'Black','margin-bottom':'1vw'})],
+            html.H1('MINUSMA Dashboard', style={'color':'#274472','margin-top':'1vw'}),
+            html.A(id = 'output_timer',style={'color':'Black','margin-bottom':'0vw'}),
+            html.A(id = 'last_update',style={'color':'Black','margin-bottom':'0vw'})],
                 style={'color':colors['text'],
                        'border': '1px solid',
                        'display':'grid',
@@ -142,7 +144,19 @@ app.layout = html.Div([
     
     dbc.Row(children=[
         dbc.Col(
-            dcc.Graph(id='fig'),width=8)
+            dcc.Graph(id='fig'),width=8),
+        dbc.Col(children = [
+            html.Br(),
+            dbc.Row(
+                html.H3('',style={'color':colors['text']})
+                ),
+            dbc.Row(
+                dcc.Graph(id='fig_month_incidents',style={"width": "100%","display": "inline-block" })),
+            dbc.Row(
+                dcc.Graph(id='fig_month_deaths',style={'margin-left':'0vw',"width": "100%","display": "inline" }))
+            
+            ],width=4, style={'margin-top': '2vw'}
+            )
         ]),
     dbc.Row(children=[
         dbc.Col(children=[
@@ -150,16 +164,14 @@ app.layout = html.Div([
     [
         dbc.Container(
             [
-                html.H1("Fluid jumbotron", className="display-3"),
+                html.H1("", className="display-3"),
                 html.P(
-                    "This jumbotron occupies the entire horizontal "
-                    "space of its parent.",
+                    "",
                     className="lead",
                 ),
                 html.P(
-                    "You will need to embed a fluid container in "
-                    "the jumbotron.",
-                    className="lead",
+                    '© Simon Moseley 2020',
+                    className="lead"
                 ),
             ],
             fluid=True,
@@ -191,7 +203,10 @@ def update_time(n):
      Output(component_id = 'fig_minusma_series', component_property = 'figure'),
      Output(component_id = 'fig_indicator1', component_property = 'figure'),
      Output(component_id = 'fig_indicator2', component_property = 'figure'),
-     Output(component_id = 'fig_indicator3', component_property = 'figure')  
+     Output(component_id = 'fig_indicator3', component_property = 'figure'),
+     Output(component_id = 'last_update', component_property = 'children'),
+     Output(component_id = 'fig_month_incidents', component_property= 'figure'),
+     Output(component_id = 'fig_month_deaths', component_property= 'figure'),
      ],
     [Input(component_id='my_interval_graphs',component_property = 'n_intervals')])
 
@@ -221,6 +236,29 @@ def update_graphs(n):
     total_fatalities = int(map_data['fatalities'].sum())
     time_now = dt.datetime.now().strftime('%H:%M')
     
+    #Get last event in the database
+    updated_acled = max(AcledData['event_date'])
+    
+    #Process the dataframes for the monthly year-on-year comparisons
+    last_day_of_prev_month = date.today().replace(day=1) - timedelta(days=1)
+    start_day_of_prev_month = date.today().replace(day=1) - timedelta(days=last_day_of_prev_month.day)
+    last_day_last_year = last_day_of_prev_month - timedelta(days=365)
+    first_day_last_year = start_day_of_prev_month - timedelta(days=365)
+    
+    mask_monthly = (map_data['event_date'] > start_day_of_prev_month) & (map_data['event_date'] <=last_day_of_prev_month)
+    deaths_last_month = map_data.loc[mask_monthly]['fatalities'].sum()
+    incidents_last_month = int(len(map_data.loc[mask_monthly]))
+    
+    mask_month_year_ago = (map_data['event_date'] > first_day_last_year) & (map_data['event_date'] <= last_day_last_year)
+    deaths_month_year_ago = map_data.loc[mask_month_year_ago]['fatalities'].sum()
+    incidents_last_month_year_ago = int(len(map_data.loc[mask_month_year_ago]))
+    # For printing results
+    #print("First day of prev month:", start_day_of_prev_month)
+    #print("Last day of prev month:", last_day_of_prev_month)
+    
+    
+    
+    
     fig_density_series = px.histogram(map_data,
                                       x = map_data['event_date'],
                                       y=map_data['fatalities'],
@@ -240,7 +278,8 @@ def update_graphs(n):
                                      opacity=0.7)
     fig_minusma_series.update_layout(xaxis_title="Time",
                        yaxis_title="Events invovling MINUSMA",
-                       title = 'Involvement of MINUSMA by Time'
+                       title = 'Involvement of MINUSMA by Time',
+                       paper_bgcolor = 'white'
                          )
        
     fig = px.scatter_mapbox(map_data, 
@@ -297,12 +336,35 @@ def update_graphs(n):
     fig_indicator3.update_layout(paper_bgcolor = '#5885AF',
                                  font= {'color': 'white'},
                                  height=250)
+    
+    fig_month_incidents = go.Figure()
+    fig_month_incidents.add_trace(go.Indicator(
+        value = int(incidents_last_month),
+        title = 'Incidents last month',
+        mode = 'number+delta',
+        delta = {'reference': incidents_last_month_year_ago, 'increasing':{'color':'red'}}))
+    fig_month_incidents.update_layout(height=250)
+    
+    fig_months_deaths = go.Figure()
+    fig_months_deaths.add_trace(go.Indicator(
+        value = int(deaths_last_month),
+        title = 'Fatalities last month',
+        mode = 'number+delta',
+        delta = {'reference': deaths_month_year_ago,'increasing':{'color':'red'}},
+        domain = {'x': [0, 1], 'y': [0, 1]}))
+    fig_months_deaths.update_layout(height=250)
+    
+    
 
 
     
-    return (fig,fig2,
+    return (
+            fig,fig2,
             fig_density_series,fig_minusma_series,
-            fig_indicator1,fig_indicator2,fig_indicator3,)
+            fig_indicator1,fig_indicator2,fig_indicator3,
+            'Latest data: ' + str(updated_acled),
+            fig_month_incidents, fig_months_deaths,
+            )
 
 if __name__ == '__main__':
     app.run_server(debug=True)
