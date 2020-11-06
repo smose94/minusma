@@ -211,8 +211,8 @@ def update_time(n):
     [Input(component_id='my_interval_graphs',component_property = 'n_intervals')])
 
 def update_graphs(n):
-    token = 'pk.eyJ1Ijoic21vc2U5NCIsImEiOiJja2N1c2RxbncwbXpzMnNwYmZzeTVjcXY5In0.JCYT6a5J_4IiEeVBoinhvg'
-    api = "https://api.acleddata.com/acled/read?terms=accept&country=Mali&iso=466&limit=0"
+    token = 'pk.eyJ1Ijoic21vc2U5NCIsImEiOiJja2N1c2RxbncwbXpzMnNwYmZzeTVjcXY5In0.JCYT6a5J_4IiEeVBoinhvg'   
+    api = "https://api.acleddata.com/acled/read/?key=lh6GAYsnaRO!yDyDCeDz&email=simon_moseley55@yahoo.co.uk&country=Mali&iso=466&limit=0"
     AcledData = json.loads(requests.get(api).text)
     AcledData = pd.DataFrame(AcledData['data'])
     data = AcledData.to_csv('Processed_Acled_Mali.csv')
@@ -342,7 +342,7 @@ def update_graphs(n):
         value = int(incidents_last_month),
         title = 'Incidents last month',
         mode = 'number+delta',
-        delta = {'reference': incidents_last_month_year_ago, 'increasing':{'color':'red'}}))
+        delta = {'reference': incidents_last_month_year_ago, 'increasing':{'color':'red'}, 'decreasing':{'color':'green'}}))
     fig_month_incidents.update_layout(height=250)
     
     fig_months_deaths = go.Figure()
@@ -350,7 +350,7 @@ def update_graphs(n):
         value = int(deaths_last_month),
         title = 'Fatalities last month',
         mode = 'number+delta',
-        delta = {'reference': deaths_month_year_ago,'increasing':{'color':'red'}},
+        delta = {'reference': deaths_month_year_ago,'increasing':{'color':'red'},'decreasing':{'color':'green'}},
         domain = {'x': [0, 1], 'y': [0, 1]}))
     fig_months_deaths.update_layout(height=250)
     
