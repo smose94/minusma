@@ -5,7 +5,7 @@ pandas==1.0.1
 seaborn
 requests
 plotly
-dash
+dash>=1.9.0
 dash-bootstrap-components>=0.10.1
 gunicorn
 pytz
