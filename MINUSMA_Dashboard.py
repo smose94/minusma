@@ -106,7 +106,7 @@ app.layout = html.Div([
                     style={
                            'text-align':'left',
                            'margin-top':'1.5vw',
-                           'font-size':22
+                           'font-size':22.5
                            })],
 
                 style={'color':colors['text'],
