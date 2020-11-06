@@ -22,7 +22,7 @@ import dash_html_components as html
 from dash.dependencies import Input, Output
 from dash.exceptions import PreventUpdate
 import dash_bootstrap_components as dbc
-import config 
+import os 
 
 colors = {
     'background': 'rgb(240,240,230)',
@@ -212,8 +212,8 @@ def update_time(n):
     [Input(component_id='my_interval_graphs',component_property = 'n_intervals')])
 
 def update_graphs(n):
-    token = config.token_mapbox   
-    api = config.api_key
+    token = os.getenv('token_mapbox') 
+    api = os.getenv('api_key')
     AcledData = json.loads(requests.get(api).text)
     AcledData = pd.DataFrame(AcledData['data'])
     data = AcledData.to_csv('Processed_Acled_Mali.csv')
