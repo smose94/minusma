@@ -213,10 +213,10 @@ def update_time(n):
 
 def update_graphs(n):
     token = os.getenv('token_mapbox') 
-    api = os.getenv('api_key')
-    AcledData = json.loads(requests.get(api).text)
-    AcledData = pd.DataFrame(AcledData['data'])
-    data = AcledData.to_csv('Processed_Acled_Mali.csv')
+    '''api = os.getenv('api_key')
+    'AcledData = json.loads(requests.get(api).text)
+    'AcledData = pd.DataFrame(AcledData['data'])
+    data = AcledData.to_csv('Processed_Acled_Mali.csv')'''
     data = pd.read_csv('Processed_Acled_Mali.csv')
     
     years_active = ['2013','2014','2015','2016','2017','2018','2019','2020']
@@ -238,7 +238,7 @@ def update_graphs(n):
     time_now = dt.datetime.now().strftime('%H:%M')
     
     #Get last event in the database
-    updated_acled = max(AcledData['event_date'])
+    updated_acled = max(data['event_date'])
     
     #Process the dataframes for the monthly year-on-year comparisons
     last_day_of_prev_month = pd.Timestamp.today().replace(day=1) - timedelta(days=1)
@@ -368,5 +368,5 @@ def update_graphs(n):
             )
 
 if __name__ == '__main__':
-    app.run_server(debug=True)
+    app.run_server(debug=True,host="0.0.0.0")
 
